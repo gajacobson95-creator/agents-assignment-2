@@ -6,6 +6,7 @@ Part 2: GitHub MCP integration using a GitHub MCP server.
 """
 
 from google.adk.agents import LlmAgent
+from google.adk.models.lite_llm import LiteLlm
 from config.settings import Settings
 from tools.tasks_tools import tasks_tools
 from tools.mcp_tools import get_github_mcp_toolset
@@ -37,7 +38,7 @@ def create_agent() -> LlmAgent:
 
     return LlmAgent(
         name="workspace_assistant",
-        model=settings.model_name,
+        model=LiteLlm(model=settings.model_name) if "/" in settings.model_name else settings.model_name,
         instruction=instruction,
         tools=tasks_tools + [github_mcp_toolset],
     )

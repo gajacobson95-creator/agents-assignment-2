@@ -74,6 +74,13 @@ def main():
     agent = create_agent()
     runner = InMemoryRunner(agent=agent)
 
+    # InMemoryRunner needs a session before runner.run(...) can use it.
+    runner.session_service.create_session_sync(
+        app_name=getattr(runner, "app_name", agent.name),
+        user_id=USER_ID,
+        session_id=SESSION_ID,
+    )
+
     if args.interactive:
         interactive_mode(runner)
     elif args.query:

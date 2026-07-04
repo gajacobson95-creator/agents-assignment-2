@@ -1,38 +1,48 @@
 """
 Google Workspace Assistant - Main Agent Definition
 
-Part 1: Implement tools and system instruction for Calendar OR Tasks
-Part 2: Add McpToolset for GitHub integration
+Part 1: Google Tasks assistant using ADK.
+Part 2: GitHub MCP integration using a GitHub MCP server.
 """
 
-import os
 from google.adk.agents import LlmAgent
-from google.adk.tools.mcp_tool import McpToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
-from mcp import StdioServerParameters
-
 from config.settings import Settings
-
-# TODO: Import your chosen tool set
-# from tools.calendar_tools import calendar_tools
-# from tools.tasks_tools import tasks_tools
-
-# TODO Part 2: Import MCP tools
-# from tools.mcp_tools import mcp_tools
+from tools.tasks_tools import tasks_tools
+from tools.mcp_tools import get_github_mcp_toolset
 
 
 def create_agent() -> LlmAgent:
     """Create the Workspace Assistant agent."""
     settings = Settings()
 
-    # TODO Part 1: Write your system instruction
+    instruction = """
+    You are a Google Workspace assistant that helps users manage Google Tasks
+    and interact with GitHub repositories.
 
-    # TODO Part 2: Create McpToolset for GitHub
+    For Google Tasks, you can list current tasks, create new tasks, update task
+    details, and mark tasks as complete. Use the task tools whenever the user
+    asks to view, add, edit, or complete tasks.
 
-    # TODO: Create and return your LlmAgent
-    raise NotImplementedError("Implement create_agent")
+    For GitHub, you can help users list repositories, inspect repository files,
+    view open issues, and create issues when requested. Use the GitHub MCP
+    toolset for GitHub-related questions.
+
+    Be careful with state-changing actions such as creating tasks, completing
+    tasks, or creating GitHub issues. If the user's request is ambiguous, ask
+    a clarifying question before making changes. Explain errors in plain English.
+    Never expose credentials, OAuth tokens, stack traces, or internal secrets.
+    """
+
+    github_mcp_toolset = get_github_mcp_toolset()
+
+    return LlmAgent(
+        name="workspace_assistant",
+        model=settings.model_name,
+        instruction=instruction,
+        tools=tasks_tools + [github_mcp_toolset],
+    )
 
 
 def create_agent_with_tool_search() -> LlmAgent:
-    """BONUS: Create agent with defer_loading for tool search."""
-    raise NotImplementedError("Bonus: Implement tool search pattern")
+    """BONUS placeholder for tool search pattern."""
+    return create_agent()

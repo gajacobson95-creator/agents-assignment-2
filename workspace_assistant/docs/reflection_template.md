@@ -52,10 +52,24 @@ If I had more time, I would add or change:
 
 ---
 
+## Bonus: Tool Search Pattern
+
+For the bonus, I added a `search_github_tools` function that lets the agent search a small catalog of GitHub MCP capabilities before deciding which GitHub tool is relevant. I also implemented `create_agent_with_tool_search()` so the agent can be created with the normal Google Tasks tools, the GitHub tool search function, and a reduced GitHub MCP toolset.
+
+The assignment references `defer_loading=True`, but the installed ADK version did not expose a `defer_loading` argument on `McpToolset`. To keep the implementation compatible, I added a helper that checks whether `defer_loading` is supported. If it is available, the code uses it. If it is not available, the code falls back to `tool_filter` and only loads the most common GitHub tools up front, such as `get_file_contents` and `search_repositories`.
+
+This still follows the intent of the tool search pattern: avoid exposing every GitHub MCP tool to the model immediately, provide a smaller search/discovery tool, and reduce upfront context usage.
+
+---
+
 ## Key Learnings
 
-This assignment helped me understand that building an AI agent is different from writing a normal script. The tool functions need to be clear enough for both Python and the language model. Good function names, docstrings, type hints, and structured return values make it much easier for the agent to decide what to do.
+---
 
-I also learned that a lot of agent development is integration work. The Python code can be correct, but the system still depends on environment variables, API keys, model provider limits, OAuth, Node.js, MCP servers, and GitHub permissions. Debugging required separating code errors from configuration errors.
+## Bonus: Tool Search Pattern
 
-The biggest takeaway was that tests are necessary but not enough by themselves. The automated tests confirmed the tool and MCP setup, but the real CLI smoke test exposed session setup, model quota, and token issues. Running both automated tests and realistic prompts gave me more confidence that the assistant was actually wired together correctly.
+For the bonus, I added a `search_github_tools` function that lets the agent search a small catalog of GitHub MCP capabilities before deciding which GitHub tool is relevant. I also implemented `create_agent_with_tool_search()` so the agent can be created with the normal Google Tasks tools, the GitHub tool search function, and a reduced GitHub MCP toolset.
+
+The assignment references `defer_loading=True`, but the installed ADK version did not expose a `defer_loading` argument on `McpToolset`. To keep the implementation compatible, I added a helper that checks whether `defer_loading` is supported. If it is available, the code uses it. If it is not available, the code falls back to `tool_filter` and only loads the most common GitHub tools up front, such as `get_file_contents` and `search_repositories`.
+
+This still follows the intent of the tool search pattern: avoid exposing every GitHub MCP tool to the model immediately, provide a smaller search/discovery tool, and reduce upfront context usage.
